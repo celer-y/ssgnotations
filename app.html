@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -3588,6 +3588,13 @@ FT:
         keywords: ['cgnat', 'reactivation', 'work', 'static ip', 'remote access']
       },
       {
+        id: 'lanportactivation',
+        name: 'LAN Port Activation',
+        category: 'DATA',
+        description: 'LAN Port Activation - Create ticket for L2 endorsement',
+        keywords: ['lan port', 'activation', 'port', 'data', 'bind']
+      },
+      {
         id: 'cannotdetect',
         name: 'Cannot Detect Printer/CCTV/TV',
         category: 'DATA',
@@ -3776,7 +3783,7 @@ FT:
 
     function toggleSpecialInstructions(templateId) {
       const specialInstructionsSection = document.getElementById('specialInstructionsSection');
-      const hideForTemplates = ['lcp', 'olt', 'nic', 'nicbar', 'cgnatdeactivation', 'cgnatreactivation', 'tel2', 'sic'];
+      const hideForTemplates = ['lcp', 'olt', 'nic', 'nicbar', 'cgnatdeactivation', 'cgnatreactivation', 'lanportactivation', 'tel2', 'sic'];
 
       if (hideForTemplates.includes(templateId)) {
         specialInstructionsSection.classList.add('hidden');
@@ -5672,6 +5679,67 @@ INV 4 - Device and Website IP Configuration`;
           // Focus on the first field (Caller)
           const callerField = document.querySelector('[name="newCaller"]');
           if (callerField) callerField.focus();
+
+          return "";
+        },
+      },
+
+      lanportactivation: {
+        description: "LAN Port Activation",
+        execute: () => {
+          toggleView("new");
+
+          const sectionIdsToHide = [
+            'setupFindingsSection',
+            'nmsFindingsSection',
+            'clearviewFindingsSection',
+            'dmsFindingsSection',
+            'specialInstructionsSection',
+            'remarksSection'
+          ];
+
+          sectionIdsToHide.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) section.classList.add('hidden');
+          });
+
+          // Show Investigation and Description sections
+          const investigationSection = document.getElementById('investigationSection');
+          if (investigationSection) investigationSection.classList.remove('hidden');
+          
+          const descriptionSection = document.getElementById('descriptionSection');
+          if (descriptionSection) descriptionSection.classList.remove('hidden');
+
+          // Hide Option82 field for LAN Port Activation
+          const option82Field = document.getElementById('option82Field');
+          if (option82Field) option82Field.classList.add('hidden');
+
+          // Clear all fields first
+          document.querySelectorAll('.field input[type="text"], .field textarea, .field select').forEach(field => {
+            if (field.name) field.value = '';
+          });
+
+          // Fill in Investigation
+          const investigation = document.querySelector('[name="newInvestigation"]');
+          if (investigation) investigation.value = `INV 1 - Normal Status
+INV 2 - Up/Active
+INV 3 - Without Line Problem Detected
+INV 4 - Data Bind Port`;
+
+          // Fill in LAN Port Activation specific fields
+          const concern = document.querySelector('[name="newConcern"]');
+          if (concern) concern.value = 'LAN PORT ACTIVATION';
+
+          const cvReco = document.querySelector('[name="newCVReco"]');
+          if (cvReco) cvReco.value = 'Without FTTH Line Problem';
+
+          // Focus on the first field (Caller)
+          const callerField = document.querySelector('[name="newCaller"]');
+          if (callerField) callerField.focus();
+
+          // Clear Remarks for LAN Port Activation
+          const remarksField = document.querySelector('[name="newRemarks"]');
+          if (remarksField) remarksField.value = '';
 
           return "";
         },
